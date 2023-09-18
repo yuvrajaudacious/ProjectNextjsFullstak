@@ -1,0 +1,22 @@
+.background {
+    background-image: url("../../../public/Image/img.avif");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 95vh;
+
+}
+
+.login {
+    position: absolute;
+    right: 0;
+    background-color: #e2e1e1;
+    margin-top: 120px;
+    margin-right: 90px;
+}
+.button {
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+    /* Add other styles as needed */
+  }
