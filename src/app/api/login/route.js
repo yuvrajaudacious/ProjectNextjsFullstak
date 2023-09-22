@@ -8,7 +8,7 @@ export async function POST(req, response) {
   await mongoose.connect(connection, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    retryWrites: false, 
+    retryWrites: false,
   });
 
   try {
@@ -18,7 +18,7 @@ export async function POST(req, response) {
     const user = await Login.findOne({ email });
 
     if (!user) {
-      return response.json({ message: "User not found" }, { status: 401 });
+      return NextResponse.json({ message: "User not found" }, { status: 401 });
     }
 
     const tokenData = {

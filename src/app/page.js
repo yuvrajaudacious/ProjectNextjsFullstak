@@ -26,7 +26,7 @@ function page() {
         </Menu>
       </Header>
       <Content style={{ margin: "16px" }}>
-        <Home />{" "}
+        <Home />
       </Content>
     </Layout>
   );

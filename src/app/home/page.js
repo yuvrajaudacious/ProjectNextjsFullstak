@@ -4,6 +4,7 @@ import Image from "next/image";
 import profile from "../../../public/Image/ads.png";
 import profile1 from "../../../public/Image/ads2.webp";
 import profile2 from "../../../public/Image/ads3.webp";
+import Cards from "./card/page";
 
 const Home = () => {
   const contentStyle = {
@@ -23,6 +24,7 @@ const Home = () => {
           <Image src={profile2} alt="Virat Kohli" width={1310} height={140} />
         </div>
       </Carousel>
+      <Cards />
     </div>
   );
 };

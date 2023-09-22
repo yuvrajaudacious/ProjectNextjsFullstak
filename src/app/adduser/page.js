@@ -9,6 +9,7 @@ import {
   Col,
   Row,
   message,
+  Select,
 } from "antd";
 import axios from "axios";
 
@@ -20,12 +21,14 @@ import {
 import "./style.css";
 import { useState } from "react";
 import Link from "next/link";
+import { Option } from "antd/es/mentions";
 const AddUser = () => {
-  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
-  const [dob, setDob] = useState(null);
-
+  const [dateOfBirth, setDateOfBirth] = useState(null);
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
   const normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
@@ -34,14 +37,16 @@ const AddUser = () => {
   };
   const adduser = async (e) => {
     e.preventDefault();
-    console.log(name, email, number, dob);
+    console.log(userName, email, number, dateOfBirth, age,gender);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/products", {
-        name,
+      const response = await axios.post("http://localhost:3000/api/adduser", {
+        userName,
         email,
         number,
-        dob,
+        dateOfBirth: null,
+        gender,
+        age,
       });
 
       if (response.data) {
@@ -57,100 +62,130 @@ const AddUser = () => {
 
   return (
     <div>
-      <h1>Add User</h1>
-      <Link href="/userlist">UserList</Link>
-      <Card className="cards">
-        <Form name="add-user-form">
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter username!",
-                  },
-                ]}
+      <Form name="add-user-form">
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter username!",
+                },
+              ]}
+            >
+              <Input
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                prefix={<UserOutlined />}
+                placeholder="username"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter Email!",
+                },
+              ]}
+            >
+              <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                prefix={<UserOutlined />}
+                placeholder="Email"
+              />
+            </Form.Item>{" "}
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="number"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter Number!",
+                },
+              ]}
+            >
+              <Input
+                value={number}
+                onChange={(e) => setNumber(e.target.value)}
+                prefix={<FieldNumberOutlined />}
+                placeholder="Number"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item>
+              <DatePicker
+                onChange={(dateOfBirth) =>
+                  setDateOfBirth("dateOfBirth", dateOfBirth)
+                }
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              name="age"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter age!",
+                },
+              ]}
+            >
+              <Input
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="Age"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="gender"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Select placeholder="Select a option and change input text above">
+                <Option value="male">male</Option>
+                <Option value="female">female</Option>
+                <Option value="other">other</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item valuePropName="fileList" getValueFromEvent={normFile}>
+          <Upload action="/upload.do" listType="picture-card">
+            <div>
+              <PlusOutlined />
+              <div
+                style={{
+                  marginTop: 8,
+                }}
               >
-                <Input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  prefix={<UserOutlined />}
-                  placeholder="username"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="email"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter Email!",
-                  },
-                ]}
-              >
-                <Input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  prefix={<UserOutlined />}
-                  placeholder="Email"
-                />
-              </Form.Item>{" "}
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="number"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter Number!",
-                  },
-                ]}
-              >
-                <Input
-                  value={number}
-                  onChange={(e) => setNumber(e.target.value)}
-                  prefix={<FieldNumberOutlined />}
-                  placeholder="Number"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item>
-              <DatePicker/>
-                <Input
-                  value={dob}
-                  onChange={(e) => setDob(e.target.value)}
-                  placeholder="Date Of Birth"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Form.Item valuePropName="fileList" getValueFromEvent={normFile}>
-            <Upload action="/upload.do" listType="picture-card">
-              <div>
-                <PlusOutlined />
-                <div
-                  style={{
-                    marginTop: 8,
-                  }}
-                >
-                  Upload Your Profile
-                </div>
+                Upload Your Profile
               </div>
-            </Upload>
-          </Form.Item>
+            </div>
+          </Upload>
+        </Form.Item>
 
-          <Form.Item>
-            <Button onClick={adduser} type="primary" htmlType="submit">
-              Add User
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+        <Form.Item>
+          <Button onClick={adduser} type="primary" htmlType="submit">
+            Add User
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

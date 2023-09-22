@@ -36,7 +36,7 @@ const Signup = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3000//api/signup", {
+      const response = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,14 +46,13 @@ const Signup = () => {
 
       if (response.ok) {
         const data = await response.json();
-        message.success("Signup successful");
         console.log(data.message);
       } else {
-        console.error("API call failed");
-        message.info("Signup succesdfsssful");
+        const errorData = await response.json();
+        console.error("Signup failed:", errorData.message);
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("An error occurred:", error);
     }
   };
 
