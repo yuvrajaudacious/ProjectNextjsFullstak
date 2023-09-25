@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-
 export default (req, res) => {
   const { method } = req;
-
   try {
     switch (method) {
       case "GET":

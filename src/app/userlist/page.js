@@ -1,45 +1,46 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import { Button, Table, message, Input, Modal, Card } from "antd";
 import AddUser from "../adduser/page";
 import EditUser from "../Edituser/page";
 import {
   EditTwoTone,
-  DeleteTwoTone,
-  InfoCircleTwoTone,
   DeleteOutlined,
   InfoCircleOutlined,
+  CheckCircleTwoTone,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import "./style.css";
 import Link from "next/link";
+import StatusDropdown from "../status/page";
 
 const { Search } = Input;
 
-const getuser = async () => {
-  try {
-    const response = await axios.get("http://localhost:3000/api/adduser");
-    const data = response.data;
-
-    if (data.success) {
-      return data.result;
-    } else {
-      return { success: false };
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return { success: false };
-  }
-};
-
-export default function Page() {
+const Page = () => {
   const [users, setUsers] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editUserData, setEditUserData] = useState(null);
-  const [userdetail, setUserdetail] = useState("");
+  const [userDetail, setUserDetail] = useState(null);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
+
+  const getuser = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/adduser");
+      const data = response.data;
+
+      if (data.success) {
+        return data.result;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -64,8 +65,8 @@ export default function Page() {
     showModal();
   };
 
-  const handledetail = (user) => {
-    setUserdetail(user);
+  const handleDetail = (user) => {
+    setUserDetail(user);
   };
 
   const handleDelete = (user) => {
@@ -95,6 +96,28 @@ export default function Page() {
     setDeleteUserId(null);
   };
 
+  const handleStatusChange = async (user, newStatus) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/api/adduser/${user._id}`,
+        { Status: newStatus }
+      );
+
+      if (response.data.success) {
+        message.success("Status updated successfully");
+        const updatedUsers = users.map((u) =>
+          u._id === user._id ? { ...u, Status: newStatus } : u
+        );
+        setUsers(updatedUsers);
+      } else {
+        message.error("Failed to update status");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      message.error("An error occurred while updating status");
+    }
+  };
+
   const columns = [
     {
       title: "User Id",
@@ -103,10 +126,11 @@ export default function Page() {
       render: (_, __, index) => index + 1,
     },
     {
-      title: "Status",
-      dataIndex: "Status",
-      key: "Status",
+      title: "ProfilePicture",
+      dataIndex: "profilePicture",
+      key: "profilePicture",
     },
+
     {
       title: "User Name",
       dataIndex: "userName",
@@ -125,10 +149,7 @@ export default function Page() {
       dataIndex: "email",
       key: "email",
       render: (text) => (
-        <Link
-          href={`mailto:?to=${text}`}
-          style={{ color: "blue", textDecoration: "" }}
-        >
+        <Link href={`mailto:${text}`} style={{ color: "blue" }}>
           {text}
         </Link>
       ),
@@ -154,6 +175,18 @@ export default function Page() {
       key: "gender",
     },
     {
+      title: "Status",
+      dataIndex: "Status",
+      key: "Status",
+      render: (text, user) => (
+        <StatusDropdown
+          value={text}
+          onChange={(value) => handleStatusChange(user, value)}
+        />
+      ),
+    },
+
+    {
       title: "Action",
       dataIndex: "Action",
       key: "action",
@@ -168,9 +201,9 @@ export default function Page() {
               style={{ color: "red", marginRight: "8px" }}
               onClick={() => handleDelete(user)}
             />
-            <Link href="/userdetail">
+            <Link href={`/userdetail`}>
               <InfoCircleOutlined
-                onClick={() => handledetail(user)}
+                onClick={() => handleDetail(user)}
                 style={{ color: "green" }}
               />
             </Link>
@@ -186,10 +219,11 @@ export default function Page() {
 
   return (
     <div>
-      <Card title="User List" className="ctable">
+      <Card title="User List " className="ctable">
         <div className="btn-search" style={{ marginBottom: 16 }}>
           <Button type="primary" onClick={showModal}>
-            Add User
+            <PlusCircleOutlined />
+            Add User{" "}
           </Button>
           <Search
             placeholder="Search by user name"
@@ -200,7 +234,7 @@ export default function Page() {
         <Table dataSource={filteredUsers} columns={columns} />
 
         <Modal
-          title={editUserData ? "Edit User" : "Add User"}
+          title={editUserData ? "Edit User" : ""}
           visible={isModalVisible}
           onCancel={handleCancel}
           footer={null}
@@ -219,4 +253,6 @@ export default function Page() {
       </Card>
     </div>
   );
-}
+};
+
+export default Page;

@@ -79,11 +79,10 @@ const EditUser = ({ user, onCancel, onUpdate }) => {
             },
           ]}
         >
-          <Select >
-            <Option
-             value={editedUser.gender}></Option>
-            <Option value={editedUser.gender}></Option>
-            <Option value={editedUser.gender}></Option>
+          <Select onChange={handleInputChange}>
+            <Option value="male">male</Option>
+            <Option value="female">female</Option>
+            <Option value="other">other</Option>
           </Select>
         </Form.Item>
         <Form.Item>
